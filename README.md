@@ -1,23 +1,16 @@
-# YANG 2.0
+# YANG XML
 
-This is the repository for the document `draft-yn-netmod-yang2`
-(The YANG 2.0 Data Modeling Language).
+This is the repository for the document `draft-yn-netmod-yang-xml`
+(XML Encoding of YANG Data).
 
-The initial initial goal is to make RFC 7950 not be XML or NETCONF specific,
-thus setting a baseline for subsequent changes.  This is accomplished by:
-  - removing the "XML Encoding Rules" sections.
-  - removing the "NETCONF &ltl;edit-config&gt; Operations" sections.
-  - removing the "NETCONF XML Encoding Rules" sections.
-  - removing the "Example Usage" sections.
-  - making remaining examples be both XML and JSON.
-
-XML-specific text moves to `draft-yn-netmod-yang-xml` (XML Encoding
-of Data Modeled with YANG).
+The document  mimics RFC 7951 (JSON Encoding of YANG Data), whilst
+incoporating content from RFC 7951.  The XML has comments indicating
+where content was sourced.
 
 
 ## Build Artifacts and Diffs
 
-https://netmod-wg.github.io/yang2
+https://netmod-wg.github.io/yang-xml
 
 GitHub workflow actions are used to automatically build, test, and
 publish the three drafts, in the `html`, `txt`, and `xml` formats.
@@ -33,7 +26,7 @@ The webpage also provide links to:
 
 All contributions are made using pull requests (PRs).
 
-Please see the [contributing](https://github.com/netmod-wg/yang2/blob/main/CONTRIBUTING.md) page for details.
+Please see the [contributing](https://github.com/netmod-wg/yang-xml/blob/main/CONTRIBUTING.md) page for details.
 
 
 ## Command Line Usage
