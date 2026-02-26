@@ -134,7 +134,7 @@ jobs:
         with:
           #issue-number: ${{ github.event.pull_request.number || github.event.issue.number }}
           issue-number: ${{github.event.number}}
-          issue-number: 1
+          #issue-number: 1
           comment-author: 'github-actions[bot]'
           body-includes: 'All of the following must be verified before merging to `main`.'
       - run: |
