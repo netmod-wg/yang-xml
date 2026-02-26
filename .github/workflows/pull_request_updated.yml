@@ -136,7 +136,7 @@ jobs:
           #issue-number: ${{github.event.number}}
           issue-number: 1
           comment-author: 'github-actions[bot]'
-          #body-includes: 'All of the following must be verified before merging to main.'
+          body-includes: 'All of the following must be verified before merging to `main`.'
       - run: |
           echo ${{ steps.fc.outputs.comment-id }}
           echo ${{ steps.fc.outputs.comment-node-id }}
