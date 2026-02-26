@@ -1,0 +1,977 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!DOCTYPE rfc
+[
+  <!ENTITY nbsp    "&#160;">
+  <!ENTITY zwsp   "&#8203;">
+  <!ENTITY nbhy   "&#8209;">
+  <!ENTITY wj     "&#8288;">
+]>
+
+<?xml-stylesheet type="text/xsl" href="rfc2629.xslt"?>
+<?rfc toc="yes"?>
+<?rfc compact="no"?>
+<?rfc subcompact="no"?>
+<?rfc iprnotified="no"?>
+<?rfc strict="yes"?>
+
+<rfc ipr="trust200902" category="std" submissionType="IETF" consensus="true"
+  xmlns:xi="http://www.w3.org/2001/XInclude" docName="draft-yn-netmod-yang-xml-latest">
+    <front>
+        <title abbrev="XML Encoding of YANG Data">XML Encoding of Data Modeled with YANG</title>
+        <author initials="K" surname="Watsen" fullname='Kent Watsen' role="editor">
+            <organization>Watsen Networks</organization>
+            <address>
+                <email>kent+ietf@watsen.net</email>
+            </address>
+        </author>
+        <date/>
+        <area>Operations</area>
+        <workgroup>NETMOD Working Group</workgroup>
+        <keyword>yang</keyword>
+        <keyword>xml</keyword>
+        <abstract>
+            <t>This document defines encoding rules for representing YANG modeled
+            configuration data, state data, parameters of Remote Procedure Call (RPC)
+            operations or actions, and notifications defined using XML.</t>
+        </abstract>
+        <note removeInRFC="true">
+            <name>Discussion Venues</name>
+            <t>Discussion of this document takes place on the Network
+            Modeling Working Group mailing list, which is archived at
+            <eref target="https://mailarchive.ietf.org/arch/browse/netmod"/>.
+            To subscribe: <eref target="https://www.ietf.org/mailman/listinfo/netmod"/></t>
+            <t>This document is developed on GitHub at <eref target="https://github.com/netmod-wg/yang-xml"/>).
+            If you wish to contribute, please consider opening a pull request (PR).
+            See the README file for details.</t>
+        </note>
+    </front>
+
+    <middle>
+        <section title="Introduction">
+            <t>This document defines encoding rules for representing YANG
+            <xref target="I-D.yn-netmod-yang2"/> modeled configuration
+            data, state data, parameters of Remote Procedure Call (RPC)
+            operations or actions, and notifications defined using
+            the Extensible Markup Language (XML) <xref target="XML"/>.</t>
+        </section>
+
+        <section title="Terminology and Notation">
+            <!-- copy/paste/edit from RFC 7951 -->
+
+            <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+            "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY",
+            and "OPTIONAL" in this document are to be interpreted as described
+            in BCP&nbsp;14 <xref target="RFC2119"/> <xref target="RFC8174"/>
+            when, and only when, they appear in all capitals, as shown here.</t>
+            <t>The following terms are defined in <xref target="I-D.yn-netmod-yang2"/>:</t>
+            <ul spacing="compact">
+                <li>action</li>
+                <li>anydata</li>
+                <li>anyxml</li>
+                <li>augment</li>
+                <li>container</li>
+                <li>data node</li>
+                <li>data tree</li>
+                <li>identity</li>
+                <li>instance identifier</li>
+                <li>leaf</li>
+                <li>leaf-list</li>
+                <li>list</li>
+                <li>module</li>
+                <li>RPC operation</li>
+                <li>submodule</li>
+            </ul>
+            <t>The following terms are defined in <xref target="RFC6241"/>:</t>
+            <ul spacing="compact">
+              <li>configuration data</li>
+              <li>notification</li>
+              <li>state data</li>
+            </ul>
+        </section>
+
+        <section title="Properties of the XML Encoding">
+            <!-- copy/paste/edit from RFC 7951 -->
+
+            <t>This document defines XML encoding for YANG data trees and their
+            subtrees.  It is always assumed that there may be one or more top-level
+            elements in XML-encoded configuration data and state data. RPC operations
+            and notifications contain a single top-level element.</t>
+
+            <t>Instances of YANG data nodes (leafs, containers, leaf-lists, lists,
+            anydata nodes, and anyxml nodes) are encoded as XML elements having
+            the name of the YANG data node.  <xref target="names"/>) defines
+            how the name is qualified with a namespace, and the following sections
+            deal with the value part.  The encoding rules are identical for all
+            types of data trees, i.e., configuration data, state data, parameters
+            of RPC operations, actions, and notifications.</t>
+
+            <t>With the exception of "anydata" encoding (<xref target="anydata"/>), all rules in
+            this document are also applicable to YANG&nbsp;1.0 <xref target="RFC6020"/>.</t>
+
+            <t>With the exception of anyxml and schema-less anydata nodes, it is
+            possible to map an XML-encoded data tree to other encodings, such as
+            the JSON encoding as defined in <xref target="RFC7951"/>, and vice
+            versa.  However, such conversions require the YANG data model to be
+            available.</t>
+        </section>
+
+        <section title="Names and Namespaces" anchor="names">
+            <!-- copy/paste/edit from RFC 7951 -->
+
+            <t>An XML element name is always identical to the identifier of the
+            corresponding YANG data node.</t>
+
+            <t>All XML elements encoding YANG data are namespace qualified.  The
+            XML default namespace is never used in YANG encoded data.</t>
+
+            <t>The namespace of an XML element is either inherited from its ancestor
+            or set using the "xmlns" attribute in the element.</t>
+
+            <t>The "xmlns" attribute may either set the XML default namespace or
+            define a prefix for the namespace.  Note that the same XML may be
+            encoded differently by different implementations.  For instance,
+            the following two XML documents are the same.</t>
+
+            <t>Document 1:</t>
+            <figure>
+                <artwork>
+<![CDATA[
+<foo xmlns="https://example.com/foo"/>
+]]>
+                </artwork>
+            </figure>
+
+            <t>Document 2:</t>
+            <figure>
+                <artwork>
+<![CDATA[
+<my-prefix:foo xmlns:my-prefix="https://example.com/foo"/>
+]]>
+                </artwork>
+            </figure>
+
+            <t>The "namespace" statement of a module determines the namespace
+            of all data node names defined in that module.  If a data node is
+            defined in a submodule, then the namespace of the main module is used.</t>
+
+            <t>A namespace MUST be set for all top-level XML elements and then
+            also whenever the namespaces of the data node and its parent node
+            are different.</t>
+
+            <t>For example, consider the following YANG module:</t>
+
+            <figure>
+                <artwork>
+<![CDATA[
+module example-foomod {
+
+  namespace "https://example.com/foomod";
+
+  prefix "foomod";
+
+  container top {
+    leaf foo {
+      type uint8;
+    }
+  }
+}
+]]>
+                </artwork>
+            </figure>
+
+            <t>If the data model consists only of this module, then the following is
+            valid XML-encoded configuration data:</t>
+
+            <figure>
+                <artwork>
+<![CDATA[
+<top xmlns="https://example.com/foomod">
+  <foo>54</foo>
+</top>
+]]>
+                </artwork>
+            </figure>
+
+            <t>Note that the top-level element sets the default namespace which
+            "foo" leaf inherits its parent container "top".</t>
+
+            <t>Now, assume that the container "top" is augmented from another
+            module, "example-barmod":</t>
+
+            <figure>
+                <artwork>
+<![CDATA[
+module example-barmod {
+
+  namespace "https://example.com/barmod";
+
+  prefix "barmod";
+
+  import example-foomod {
+    prefix "foomod";
+  }
+
+  augment "/foomod:top" {
+    leaf bar {
+      type boolean;
+    }
+  }
+}
+]]>
+                </artwork>
+            </figure>
+
+            <t>Valid XML-encoded configuration data containing both leafs may then
+            look like this:</t>
+            <figure>
+                <artwork>
+<![CDATA[
+<top xmlns="https://example.com/foomod">
+  <foo>54</foo>
+  <bar xmlns="https://example.com/barmod">true</bar>
+</top>
+]]>
+                </artwork>
+            </figure>
+
+            <t>The "bar" leaf's element sets a new default namespace
+            because its parent is defined in a different module.</t>
+
+            <t>Explicit namespace prefixes are sometimes needed when encoding
+            values of the "identityref" and "instance-identifier" types.  See
+            <xref target="identityref"/> and <xref target="instance-identifier"/>
+            for details.</t>
+
+            <t>To improve readability of XML, a client or server
+            that generates XML or XPath that uses prefixes SHOULD use the prefix
+            defined by the module as the XML namespace prefix, unless there is a
+            conflict.</t>
+
+        </section>
+
+        <section title="Encoding of YANG Data Node Instances">
+
+            <section title='The "leaf" Data Node' anchor="leaf">
+                <!-- this part from RFC 7950 Section 7.6.6 (XML Encoding Rules) -->
+                <t>A leaf node is encoded as an XML element.  The element's local name
+                is the leaf's identifier, and its namespace is the module's XML
+                namespace (see <xref target="names"/>).</t>
+                <t>The value of the leaf node is encoded to XML according to the
+                type (see <xref target="types"/> for type encoding rules) and is
+                sent as character data in the element.</t>
+
+                <!-- copy/paste/edit from RFC 7951 Section 5.1 (The "leaf" Data Node) -->
+                <t>Example: For the leaf node definition</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+leaf foo {
+  type uint8;
+}
+]]>
+                    </artwork>
+                </figure>
+                <t>the following is a valid XML-encoded instance:</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+<foo>123</foo>
+]]>
+                    </artwork>
+                </figure>
+            </section>
+
+            <section title='The "container" Data Node'>
+                <!-- this part from RFC 7950 Section 7.5.7 (XML Encoding Rules) -->
+                <t>A container node is encoded as an XML element. The element's local name is
+                the container's identifier, and its namespace is the module's XML namespace
+                (see <xref target="names"/>).</t>
+                <t>The container's child nodes are encoded as subelements to the container
+                element. If the container defines RPC or action input or output parameters,
+                these subelements are encoded in the same order as they are defined within the
+                "container" statement. Otherwise, the subelements are encoded in any
+                order.</t>
+                <t>Any whitespace between the subelements to the container is insignificant,
+                i.e., an implementation MAY insert whitespace characters between
+                subelements.</t>
+                <t>If a non-presence container does not have any child nodes, the container
+                may or may not be present in the XML encoding.</t>
+
+                <!-- copy/paste/edit from RFC 7951 Section 5.2 (The "container" Data Node) -->
+                <t>Example: For the container definition</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+container bar {
+  leaf foo {
+    type uint8;
+  }
+}
+]]>
+                    </artwork>
+                </figure>
+                <t>the following is valid XML-encoded instance data:</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+<bar>
+    <foo>123</foo>
+</bar>
+]]>
+                    </artwork>
+                </figure>
+            </section>
+
+            <section title='The "leaf-list" Data Node'>
+                <!-- this part from RFC 7950 Section 7.7.8 (XML Encoding Rules) -->
+                <t>A leaf-list node is encoded as a series of XML elements. Each element's
+                local name is the leaf-list's identifier, and its namespace is the module's
+                XML namespace (see <xref target="names"/>).  There is no XML element
+                surrounding the leaf-list as a whole.</t>
+                <t>The value of each leaf-list entry is encoded to XML according to the type
+                and is sent as character data in the element (see <xref target="types"/> for
+                type encoding rules).</t>
+                <t>The XML elements representing leaf-list entries MUST appear in the order
+                specified by the user if the leaf-list is "ordered-by user"; otherwise, the
+                order is implementation dependent. The XML elements representing leaf-list
+                entries MAY be interleaved with elements for siblings of the leaf-list, unless
+                the leaf-list defines RPC or action input or output parameters.</t>
+
+                <!-- copy/paste/edit from RFC 7951 Section 5.3 (The "leaf-list" Data Node) -->
+                <t>Example: For the leaf-list definition</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+leaf-list foo {
+  type uint8;
+}
+]]>
+                    </artwork>
+                </figure>
+                <t>the following is a valid XML-encoded instance:</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+<foo>123</foo>
+<foo>0</foo>
+]]>
+                    </artwork>
+                </figure>
+            </section>
+
+            <section title='The "list" Data Node'>
+                <!-- this part from RFC 7950 Section 7.8.5 (XML Encoding Rules) -->
+                <t>A list is encoded as a series of XML elements, one for each entry in the
+                list. Each element's local name is the list's identifier, and its namespace is
+                the module's XML namespace (see <xref target="names"/>).  There is no XML
+                element surrounding the list as a whole.</t>
+                <t>The list's key nodes are encoded as subelements to the list's identifier
+                element, in the same order as they are defined within the "key" statement.</t>
+                <t>The rest of the list's child nodes are encoded as subelements to the list
+                element, after the keys. If the list defines RPC or action input or output
+                parameters, the subelements are encoded in the same order as they are defined
+                within the "list" statement. Otherwise, the subelements are encoded in any
+                order.</t>
+                <t>Any whitespace between the subelements to the list entry is insignificant,
+                i.e., an implementation MAY insert whitespace characters between
+                subelements.</t>
+                <t>The XML elements representing list entries MUST appear in the order
+                specified by the user if the list is "ordered-by user"; otherwise, the order
+                is implementation dependent. The XML elements representing list entries MAY be
+                interleaved with elements for siblings of the list, unless the list defines
+                RPC or action input or output parameters.</t>
+
+                <!-- copy/paste/edit from RFC 7951 Section 5.4 (The "list" Data Node) -->
+                <t>Example: For the list definition</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+  list bar {
+    key foo;
+    leaf foo {
+      type uint8;
+    }
+    leaf baz {
+      type string;
+    }
+  }
+]]>
+                    </artwork>
+                </figure>
+                <t>the following is a valid XML-encoded instance:</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+<bar>
+    <foo>123</foo>
+    <baz>zig</baz>
+</bar>
+<bar>
+    <foo>456</foo>
+    <baz>zag</baz>
+</bar>
+]]>
+                    </artwork>
+                </figure>
+            </section>
+
+            <section title='The "anydata" Data Node' anchor="anydata">
+                <!-- this part from RFC 7950 Section 7.10 (XML Encoding Rules, for anydata) -->
+                <t>An anydata node is encoded as an XML element. The element's local name is
+                the anydata's identifier, and its namespace is the module's XML namespace (see
+                <xref target="names"/>). The value of the anydata node is a set of nodes,
+                which are encoded as XML subelements to the anydata element.</t>
+
+                <!-- copy/paste/edit from RFC 7951 Section 5.5 (The "anydata" Data Node) -->
+                <t>The anydata data node serves as a container for an arbitrary set of
+                nodes that otherwise appear as normal YANG-modeled data.  A data
+                model for anydata content may or may not be known at runtime.  In the
+                latter case, converting XML-encoded instances to other encodings, such
+                as JSON <xref target="RFC7951"/> may be impossible.</t>
+
+                <!-- this part from RFC 7950 Section 7.11.2 (XML Encoding Rules, for anyxml) -->
+                <t>Note that any XML prefixes used in the encoding are local to each
+                instance encoding.  This means that the same XML may be encoded differently
+                by different implementations.</t>
+
+                <!-- copy/paste/edit from RFC 7951 Section 5.5 (The "anydata" Data Node) -->
+                <t>Example: For the anydata definition</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+anydata data;
+]]>
+                    </artwork>
+                </figure>
+                <t>the following is a valid XML-encoded instance:</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+<data>
+    <notification xmlns="urn:ietf:params:xml:ns:netmod:notification">
+        <eventTime>2014-07-29T13:43:01Z</eventTime>
+        <event xmlns="https://example.com/example-event">
+            <event-class>fault</event-class>
+            <reporting-entity>
+                <card>Ethernet0</card>
+            </reporting-entity>
+            <severity>major</severity>
+        </event>
+    </notification>
+</data>
+]]>
+                    </artwork>
+                </figure>
+            </section>
+
+            <section title='The "anyxml" Data Node'>
+                <!-- this part from RFC 7950 Section 7.11 (XML Encoding Rules, for anyxml) -->
+<!--
+    <t>
+An anyxml node is encoded as an XML element.  The element&apos;s local name
+is the anyxml&apos;s identifier, and its namespace is the module&apos;s XML
+namespace (see <xref target="namespace"/>).  The value of the anyxml node is encoded
+as XML content of this element.
+    </t>
+    <t>
+Note that any XML prefixes used in the encoding are local to each
+instance encoding.  This means that the same XML may be encoded
+differently by different implementations.
+    </t>
+-->
+
+                <!-- copy/paste/edit from RFC 7951 Section 5.6 (The "anyxml" Data Node) -->
+                <t>An anyxml node is encoded the same as an anydata node.  Please see
+                <xref target="anydata"/> for how the anydata node is encoded.</t>
+
+            </section>
+
+            <section title="Metadata Objects">
+                <!-- FIXME: move RFC 7952 here? -->
+                <t>Apart from instances of YANG data nodes, XML elements MAY contain
+                XML attributes for special purposes, such as encoding metadata
+                <xref target="RFC7952"/>. The exact syntax and semantics of such
+                members are outside the scope of this document.</t>
+            </section>
+
+        </section>
+
+        <section title="Representing YANG Data Types in XML Values" anchor="types">
+
+            <t>The type of the XML value in an instance of the leaf or leaf-list
+            data node depends on the type of that data node, as specified in the
+            following subsections.</t>
+
+            <t>All of the examples in this section use a YANG "leaf-list" solely
+            as means to illustrate multiple variations of the type.</t>
+
+            <section title="Numeric Types">
+
+                <!-- copy/paste/edit from RFC 7951 Section 6.1 (Numeric Types) -->
+                <t>All numeric types (int8, int16, int32, uint8, uint16, uint32,
+                int64, uint64, and decimal64) are represented as a text value
+                conforming the to lexical representation for the type described
+                in <xref section="9.2.1" target="I-D.yn-netmod-yang2"/> and
+                <xref section="9.3.1" target="I-D.yn-netmod-yang2"/> .</t>
+
+                <!-- this part is new -->
+                <t>Example: For the "int16" type</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+leaf-list foo {
+  type int16;
+}
+]]>
+                    </artwork>
+                </figure>
+                <t>the following is a valid XML-encoded instance:</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+<foo>4711</foo>    <!-- positive decimal value -->
+<foo>-123</foo>    <!-- negative decimal value -->
+<foo>0xf00f</foo>  <!-- positive hexadecimal value -->
+<foo>-0xf</foo>    <!-- negative hexadecimal value -->
+<foo>052</foo>     <!-- positive octal value -->
+<foo>-052</foo>    <!-- negative octal value -->
+]]>
+                    </artwork>
+                </figure>
+            </section>
+
+            <section title='The "string" Type'>
+
+                <!-- this part is new, not from RFC 7951 Section 6.2 -->
+                <t>A "string" value is represented as character data conforming
+                the to lexical representation for the type described in
+                <xref section="9.4.1" target="I-D.yn-netmod-yang2"/>.</t>
+
+                <t>Example: For the "string" type</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+leaf-list foo {
+  type string;
+}
+]]>
+                    </artwork>
+                </figure>
+
+                <t>the following is a valid XML-encoded instance:</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+<foo>This string is all on one line.</foo>
+<foo>This string is:
+	- on more than one line.
+	- contains tab characters.
+</foo>
+]]>
+                    </artwork>
+                </figure>
+
+            </section>
+
+            <section title='The "boolean" Type'>
+
+                <!-- copy/paste/edit from RFC 7951 Section 6.3 (The "boolean" Type) -->
+                <t>A "boolean" value is represented as the corresponding
+                literal name "true" or "false".</t>
+
+                <!-- this part is new -->
+                <t>Example: For the "boolean" type</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+leaf-list foo {
+  type boolean;
+}
+]]>
+                    </artwork>
+                </figure>
+                <t>the following is a valid XML-encoded instance:</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+<foo>true</foo>
+<foo>false</foo>
+]]>
+                    </artwork>
+                </figure>
+            </section>
+
+            <section title='The "enumeration" Type'>
+                <!-- this part is new -->
+                <t>An "enumeration" value is represented as character data conforming
+                the to lexical representation for the type described in
+                <xref section="9.6.1" target="I-D.yn-netmod-yang2"/>.</t>
+                <t>Example: For the "enumeration" type</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+leaf-list foo {
+  type enumeration {
+    enum one;
+    enum two;
+    enum three;
+  }
+}
+]]>
+                    </artwork>
+                </figure>
+                <t>the following is a valid XML-encoded instance:</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+<foo>one</foo>
+<foo>two</foo>
+<foo>three</foo>
+]]>
+                    </artwork>
+                </figure>
+            </section>
+
+            <section title='The "bits" Type'>
+                <!-- this part is new -->
+                <t>A "bits" value is represented as character data conforming
+                the to lexical representation for the type described in
+                <xref section="9.7.2" target="I-D.yn-netmod-yang2"/>.</t>
+
+                <t>Example: For the "bits" type</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+leaf-list foo {
+  type bits {
+     bit zero;
+     bit one;
+     bit two;
+  }
+}
+]]>
+                    </artwork>
+                </figure>
+                <t>the following is a valid XML-encoded instance:</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+<foo>zero</foo>
+<foo>zero one</foo>
+<foo>zero one two</foo>
+]]>
+                    </artwork>
+                </figure>
+            </section>
+
+            <section title='The "binary" Type'>
+                <!-- this part is new -->
+                <t>A "binary" value is represented as character data conforming
+                the to lexical representation for the type described in
+                <xref section="9.8.2" target="I-D.yn-netmod-yang2"/>.</t>
+                <t>Example: For the "binary" type</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+leaf-list foo {
+  type binary;
+}
+]]>
+                    </artwork>
+                </figure>
+                <t>the following is a valid XML-encoded instance:</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+<foo>SGVsbG8gQm9iCg==</foo>  <!-- Hello Bob -->
+<foo>SGVsbG8gQWxpY2UK</foo>  <!-- Hello Alice -->
+]]>
+                    </artwork>
+                </figure>
+            </section>
+
+            <section title='The "leafref" Type'>
+                <!-- this part is new -->
+                <t>A "leafref" value is represented as character data conforming
+                the to lexical representation for the type described in
+                <xref section="9.9.4" target="I-D.yn-netmod-yang2"/>.</t>
+                <t>Example: For the "leafref" type</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+leaf-list status {
+  type leafref {
+    path "/my-leaf";      // assume current value is "up"
+  }
+}
+
+leaf-list ifname {
+  type leafref {
+    path "/my-list/key";  // assume current key values are
+  }                       // "eth0", "eth1", and "eth2"
+}
+
+leaf-list color {
+  type leafref {
+    path "/my-leaf-list";  // assume current values are
+  }                        // "red", "green", and "blue"
+}
+]]>
+                    </artwork>
+                </figure>
+                <t>the following is valid XML-encoded instance data:</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+<status>up</status>
+
+<ifname>eth0</ifname>
+<ifname>eth1</ifname>
+<ifname>eth2</ifname>
+
+<color>red</color>
+<color>green</color>
+<color>blue</color>
+]]>
+                    </artwork>
+                </figure>
+            </section>
+
+            <section title='The "identityref" Type' anchor="identityref">
+                <!-- copy/paste/edit from RFC 7950 Section 9.10.3 (Lexical Representation for identityref) -->
+                <t>A "identityref" value is represented as character data containing the
+                namespace qualified name of the referenced identity. As defined in
+                <xref target="XML-NAMES"/>, namespaces are either explicitly qualified
+                using a prefix, or implicitly qualified using the default namespace
+                for the XML element that containing the identityref value.</t>
+
+                <!-- copy/paste/edit from RFC 7950 Section 9.10.5 (Usage Example for identityref) -->
+                <t>Example: For the "identityref" type</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+module example-crypto {
+  yang-version 1.1;
+  namespace "urn:example:crypto";
+  prefix ec;
+
+  identity symmetric-key-alg {
+    description
+      "Base identity used to identify symmetric-key crypto
+       algorithms.";
+  }
+
+  identity blowfish {
+    base symmetric-key-alg;
+    description
+      "Identity used to identify the 'blowfish' algorithm.";
+  }
+}
+
+module example-my-crypto {
+  yang-version 1.1;
+  namespace "urn:example:my-crypto";
+  prefix emc;
+
+  import example-crypto {
+    prefix ec;
+  }
+
+  identity aes {
+    base ec:symmetric-key-alg;
+    description
+      "Identity used to identify the 'aes' algorithm.";
+    }
+
+  leaf-list foo {
+    type identityref {
+      base ec:symmetric-key-alg;
+    }
+  }
+}
+]]>
+                    </artwork>
+                </figure>
+                <t>the following is a valid XML-encoded instance:</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+<foo xmlns:ec="urn:example:crypto">ec:blowfish</foo>
+<foo xmlns:x="urn:example:crypto">x:blowfish</foo>
+<foo xmlns:emc="urn:example:my-crypto">emc:aes</foo>
+<foo>aes</foo>
+]]>
+                    </artwork>
+                </figure>
+                <t>In the above example:
+                <ul>
+                  <li>The first element uses the prefix from the imported module,
+                    per best practice.</li>
+                  <li>The second element uses a local prefix, as is allowed.</li>
+                  <li>The third element uses the prefix from the local module,
+                    per best practice but, as before, a local prefix is allowed.</li>
+                  <li>The fourth element uses the default namespace, assuming
+                    it is "urn:example:my-crypto".</li>
+                </ul>
+                </t>
+            </section>
+
+            <section title='The "empty" Type'>
+                <t>An "empty" value is represented as an empty XML element.</t>
+                <t>Example: For the "empty" type</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+leaf foo {
+  type empty;
+}
+]]>
+                    </artwork>
+                </figure>
+                <t>the following is a valid XML-encoded instance:</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+<foo/>
+]]>
+                    </artwork>
+                </figure>
+            </section>
+
+            <section title='The "union" Type'>
+                <t>A "union" value is represented as character data conforming
+                the to lexical representation for the type described in
+                <xref section="9.12.2" target="I-D.yn-netmod-yang2"/>.</t>
+                <t>Example: For the "union" type</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+leaf-list foo {
+  type union {
+    type int32;
+    type enumeration {
+      enum "unbounded";
+    }
+  }
+}
+]]>
+                    </artwork>
+                </figure>
+                <t>the following is a valid XML-encoded instance:</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+<foo>16</foo>
+<foo>32</foo>
+<foo>64</foo>
+<foo>unbounded</foo>
+]]>
+                    </artwork>
+                </figure>
+            </section>
+
+            <section title='The "instance-identifier" Type' anchor="instance-identifier">
+                <!-- this part from from RFC 7950 Section 9.13.2 (Lexical Representation, for instance-identifier) -->
+                <t>A "instance-identifier" value is represented as character data.
+                All node names in an instance-identifier value MUST be qualified with
+                explicit namespace prefixes, and these prefixes MUST be declared
+                in the XML namespace scope in the instance-identifier&apos;s XML
+                element.</t>
+                <t>Any prefixes used in the encoding are local to each instance encoding.
+                This means that the same instance-identifier may be encoded
+                differently by different implementations.</t>
+
+                <!-- this part is new, but related to RFC 7950 Section 9.13.4 (Usage Example for instance-identifier) -->
+                <t>Example: For the "instance-identifier" type</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+leaf-list foo {
+  type instance-identifier;
+}
+]]>
+                    </artwork>
+                </figure>
+                <t>the following is a valid XML-encoded instance:</t>
+                <figure>
+                    <artwork>
+<![CDATA[
+<foo>/ex:system/ex:services/ex:ssh</foo>
+<foo>/ex:system/ex:services/ex:ssh/ex:port</foo>
+<foo>/ex:system/ex:user[ex:name='fred']</foo>
+<foo>/ex:system/ex:user[ex:name='fred']/ex:type</foo>
+<foo>/ex:system/ex:server[ex:ip='192.0.2.1'][ex:port='80']</foo>
+<foo>/ex:system/ex:service[ex:name='foo'][ex:enabled='']</foo>
+<foo>/ex:system/ex:services/ex:ssh/ex:cipher[.='blowfish-cbc']</foo>
+<foo>/ex:stats/ex:port[3]</foo>
+]]>
+                    </artwork>
+                </figure>
+            </section>
+
+        </section>
+
+        <section title="IANA Considerations" anchor="iana">
+        </section>
+
+        <section title="Security Considerations">
+        </section>
+
+    </middle>
+    <back>
+        <references title="Normative References">
+            <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
+            <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
+            <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.yn-netmod-yang2.xml"/>
+
+            <reference anchor="XML" target="https://www.w3.org/TR/2008/REC-xml-20081126/">
+                <front>
+                    <title>Extensible Markup Language (XML) 1.0 (Fifth Edition)</title>
+                    <author fullname="Tim Bray" surname="Bray" initials="T."/>
+                    <author fullname="Jean Paoli" surname="Paoli" initials="J."/>
+                    <author fullname="Michael Sperberg-McQueen" surname="Sperberg-McQueen"
+                         initials="C."/>
+                    <author fullname="Eve Maler" surname="Maler" initials="E."/>
+                    <author fullname="Francois Yergeau" surname="Yergeau" initials="F."/>
+                    <date year="2008" month="November" day="26"/>
+                </front><seriesInfo name="W3C Recommendation" value="REC-xml-20081126"/>
+            </reference>
+            <reference anchor="XML-NAMES" target="http://www.w3.org/TR/2009/REC-xml-names-20091208">
+                <front>
+                    <title>Namespaces in XML 1.0 (Third Edition)</title>
+                    <author initials="T." surname="Bray" fullname="Tim Bray">
+                        <organization/>
+                    </author>
+                    <author initials="D." surname="Hollander" fullname="Dave Hollander">
+                        <organization/>
+                    </author>
+                    <author initials="A." surname="Layman" fullname="Andrew Layman">
+                        <organization/>
+                    </author>
+                    <author initials="R." surname="Tobin" fullname="Richard Tobin">
+                        <organization/>
+                    </author>
+                    <author initials="H." surname="Thompson" fullname="Henry Thompson">
+                        <organization/>
+                    </author>
+                    <date month="December" day="8" year="2009"/>
+                </front>
+                <seriesInfo name="World Wide Web Consortium Recommendation" value="REC-xml-names-20091208"/>
+                <format type="HTML" target="http://www.w3.org/TR/2009/REC-xml-names-20091208"/>
+            </reference>
+        </references>
+        <references title="Informative References">
+            <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6020.xml"/>
+            <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6241.xml"/>
+            <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7950.xml"/>
+            <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7951.xml"/>
+            <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7952.xml"/>
+        </references>
+        <section title="Acknowledgements" numbered="no">
+            <t>Substantial amounts of text in this document was copied from <xref target="RFC7950"/>
+            and <xref target="RFC7951"/>.  The authors wish to thank Martin Björklund and
+            Ladislav Lhotka for authoring RFC 7950 and RFC 7951, respectively.</t>
+        </section>
+    </back>
+</rfc>
