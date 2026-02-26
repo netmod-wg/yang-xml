@@ -123,10 +123,24 @@ jobs:
 #            fi
 #
 
+  ensure_checklist_complete:
+    name: Ensure Checklist Complete
+    runs-on: ubuntu-latest
+    needs: add_checklist
+    steps:
+      - name: Ensure Checklist Complete
+        run: |
+          if ${{ contains(github.event.pull_request.body, '[ ] Updated') }} ; then
+            echo "All checklist items must be selected."
+            exit 1
+          fi
+
+
+
   update_github_pages:
     name: Update the GitHub Page
     runs-on: ubuntu-latest
-    needs: [xml2rfc, idnits_v2]
+    needs: xml2rfc
     permissions:
       pages: write
       id-token: write
