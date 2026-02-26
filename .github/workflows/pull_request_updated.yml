@@ -130,7 +130,8 @@ jobs:
     steps:
       - name: Ensure Checklist Complete
         run: |
-          if ${{ contains(github.event.pull_request.body, '[ ] Updated') }} ; then
+          echo "${{github.event.pull_request.comment}}"
+          if ${{ contains(github.event.pull_request.comment, '[ ] Updated') }} ; then
             echo "All checklist items must be selected."
             exit 1
           fi
