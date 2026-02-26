@@ -60,7 +60,7 @@ for branch in $SORTED; do
   echo "    <td nowrap class=\"bg\"> <table> <tr> <td nowrap><a href=\"$branch/draft-yn-netmod-yang-xml-00.html\">html</a> / <a href=\"$branch/draft-yn-netmod-yang-xml-00.txt\">text</a> / <a href=\"$branch/draft-yn-netmod-yang-xml-00.xml\">xml</a></td> </tr>  </table> </td>" >> index.html
 
   if [ $branch = "main" ]; then
-    echo "    <td nowrap class=\"bg\"><a href=\"https://author-tools.ietf.org/api/iddiff?doc_1=draft-yn-netmod-yang-xml&url_2=https://netmod-wg.github.io/yang-xml/main/draft-yn-netmod-yang-xml-00.txt.paged.txt\"><s>Diff with Datatracker</s></a> </td>" >> index.html
+    echo "    <td nowrap class=\"bg\"><a href=\"https://author-tools.ietf.org/api/iddiff?doc_1=draft-yn-netmod-yang-xml&url_2=https://netmod-wg.github.io/yang-xml/main/draft-yn-netmod-yang-xml-00.txt.paged.txt\">Diff with Datatracker</a> </td>" >> index.html
   else
     echo "    <td nowrap class=\"bg\"> <a href=\"https://author-tools.ietf.org/api/iddiff?url_1=https://netmod-wg.github.io/yang-xml/$BASE/draft-yn-netmod-yang-xml-00.txt&url_2=https://netmod-wg.github.io/yang-xml/$branch/draft-yn-netmod-yang-xml-00.txt\">Diff with Main</a> </td>" >> index.html
   fi
