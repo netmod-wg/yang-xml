@@ -970,7 +970,7 @@ leaf-list foo {
         </references>
         <section title="Acknowledgements" numbered="no">
             <t>Substantial amounts of text in this document was copied from <xref target="RFC7950"/>
-            and <xref target="RFC7951"/>.  The authors wish to thank Martin Björklund and
+            and <xref target="RFC7951"/>.  The author wishes to thank Martin Björklund and
             Ladislav Lhotka for authoring RFC 7950 and RFC 7951, respectively.</t>
         </section>
     </back>
