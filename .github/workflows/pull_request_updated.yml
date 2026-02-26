@@ -135,7 +135,7 @@ jobs:
           #issue-number: ${{ github.event.pull_request.number || github.event.issue.number }}
           #issue-number: ${{github.event.number}}
           issue-number: 1
-          #comment-author: 'github-actions[bot]'
+          comment-author: 'github-actions[bot]'
           #body-includes: 'All of the following must be verified before merging to main.'
       - run: |
           echo ${{ steps.fc.outputs.comment-id }}
@@ -143,7 +143,7 @@ jobs:
           echo ${{ steps.fc.outputs.comment-body }}
           echo ${{ steps.fc.outputs.comment-author }}
           echo ${{ steps.fc.outputs.comment-created-at }}
-          if ${{ contains(github.event.pull_request.comment, '[ ] Updated') }} ; then
+          if ${{ contains(steps.fc.outputs.comment-body, '[ ] Updated') }} ; then
             echo "All checklist items must be selected."
             exit 1
           fi
