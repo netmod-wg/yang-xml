@@ -913,9 +913,11 @@ leaf-list foo {
         </section>
 
         <section title="IANA Considerations" anchor="iana">
+          <t>FIXME</t>
         </section>
 
         <section title="Security Considerations">
+          <t>FIXME</t>
         </section>
 
     </middle>
