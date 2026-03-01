@@ -187,6 +187,8 @@ jobs:
       # mv all artifacts into the mysite/<branch>/ directory
       - name: Move drafts into branch dir
         run: |
+          echo "111"
+          echo draft-yn-netmod-yang-xml-[0-9][0-9].txt
           mv draft-yn-netmod-*-[0-9][0-9].* mysite/${{github.head_ref}}/
 
       # stash some metadata
@@ -207,6 +209,9 @@ jobs:
       - name: Create mysite/index.html
         run: |
           chmod +x .github/workflows/gen_index_html.sh
+          echo "1) ${{github.event.pull_request.number}}"
+          echo "2) ${{github.event.pull_request.title}}"
+          echo "3) ${{github.event.pull_request.head.ref}}"
           .github/workflows/gen_index_html.sh "${{github.event.pull_request.number}}" "${{github.event.pull_request.title}}"  "${{github.event.pull_request.head.ref}}"
 
       # recreate the drafts.tgz
