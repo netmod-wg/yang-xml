@@ -23,7 +23,9 @@ default:
 make_draft:
 	@echo "\nMaking $(draft)..."
 	@current_ver=`git tag | grep '$(draft)-[0-9][0-9]' | tail -1 | sed -e"s/.*-//"`; \
-	echo "121"; \
+	echo "112"; \
+	git fetch --tags origin
+	echo "122"; \
 	git tag; \
 	echo "222: current_ver: $$current_ver"; \
 	if [ -z "$$current_ver" ]; then \
