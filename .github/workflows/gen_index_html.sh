@@ -43,26 +43,32 @@ for branch in $SORTED; do
   DATE=`grep DATE $branch/metadata.txt | awk '{print $2}'`
   grep -q BASE $branch/metadata.txt || BASE="main" # delete this after PR #36 merges...
   grep -q BASE $branch/metadata.txt && BASE=`grep BASE $branch/metadata.txt | awk '{print $2}'`
+
+  # the "Updated" column
   echo "    <td class=\"bg\" nowrap>$DATE</td>" >> index.html
 
+  # the "Pull Request" column
   if [ $branch = "main" ]; then
     echo "    <td class=\"bg\">N/A, since this is the \"main\" branch (last updated by <a href=\"https://github.com/netmod-wg/yang-xml/pull/$NUMBER\">#$NUMBER: $TITLE</a>).</td>" >> index.html
   else
     echo "    <td class=\"bg\"><a href=\"https://github.com/netmod-wg/yang-xml/pull/$NUMBER\">#$NUMBER: $TITLE</a></td>" >> index.html
   fi
 
+  # the "Merge Operation" column
   if [ $branch = "main" ]; then
     echo "    <td class=\"bg\">N/A, since this is the <a href=\"https://github.com/netmod-wg/yang-xml/tree/main\">\"main\"</a> branch.</td>" >> index.html
   else
     echo "    <td class=\"bg\">Branch <a href=\"https://github.com/netmod-wg/yang-xml/tree/$branch\">\"$branch\"</a> merges into branch <a href=\"https://github.com/netmod-wg/yang-xml/tree/$BASE\">\"$BASE\"</a>.</td>" >> index.html
   fi
 
+  # get branch's draft version number
+  VER=`ls -1 $branch/draft-yn-netmod-yang-xml-[0-9][0-9].xml | sed -e"s/.*-//"`
+  echo "VER=$VER"
+
+  # the "Formats" column
   echo "    <td nowrap class=\"bg\"> <table> <tr> <td nowrap><a href=\"$branch/draft-yn-netmod-yang-xml-00.html\">html</a> / <a href=\"$branch/draft-yn-netmod-yang-xml-00.txt\">text</a> / <a href=\"$branch/draft-yn-netmod-yang-xml-00.xml\">xml</a></td> </tr>  </table> </td>" >> index.html
 
-  echo "===== START ====="
-  ls -1 *
-  tree
-  echo "===== STOP ====="
+  # the "Actions" column
   if [ $branch = "main" ]; then
     echo "    <td nowrap class=\"bg\"><a href=\"https://author-tools.ietf.org/api/iddiff?doc_1=draft-yn-netmod-yang-xml&url_2=https://netmod-wg.github.io/yang-xml/main/draft-yn-netmod-yang-xml-00.txt.paged.txt\">Diff with Datatracker</a> </td>" >> index.html
   else
