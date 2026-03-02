@@ -70,6 +70,7 @@ main() {
      exit 1
   fi
   echo "$SORTED_XML" > .authors.txt
+  cat .authors.txt
 }
 
 
