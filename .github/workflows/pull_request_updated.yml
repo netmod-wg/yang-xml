@@ -20,7 +20,6 @@ jobs:
               - [ ] Updated "Acknowledgements" section, or N/A? (Not GitHub users)
 
             # The following MUST be verified by the EDITOR before merging to `main`:
-              - [ ] Authors have verified all of the above?
               - [ ] The XML artifact uploads to Datatracker?
 
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
