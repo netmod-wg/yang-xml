@@ -32,7 +32,6 @@ echo "<table class=\"bg\">" >> index.html
 echo "  <tr class=\"bg\">" >> index.html
 echo "    <th class=\"bg\"><b>Updated</b></th>" >> index.html
 echo "    <th class=\"bg\"><b>Pull Request</b></th>" >> index.html
-echo "    <th class=\"bg\"><b>Merge Operation</b></th>" >> index.html
 echo "    <th class=\"bg\"><b>Formats</b></th>" >> index.html
 echo "    <th class=\"bg\"><b>Actions</b></th>" >> index.html
 echo "  </tr>" >> index.html
@@ -41,8 +40,6 @@ for branch in $SORTED; do
   NUMBER=`grep NUMBER $branch/metadata.txt | awk '{print $2}'`
   TITLE=`grep TITLE $branch/metadata.txt | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}'`
   DATE=`grep DATE $branch/metadata.txt | awk '{print $2}'`
-  grep -q BASE $branch/metadata.txt || BASE="main" # delete this after PR #36 merges...
-  grep -q BASE $branch/metadata.txt && BASE=`grep BASE $branch/metadata.txt | awk '{print $2}'`
 
   # the "Updated" column
   echo "    <td class=\"bg\" nowrap>$DATE</td>" >> index.html
@@ -54,25 +51,22 @@ for branch in $SORTED; do
     echo "    <td class=\"bg\"><a href=\"https://github.com/netmod-wg/yang-xml/pull/$NUMBER\">#$NUMBER: $TITLE</a></td>" >> index.html
   fi
 
-  # the "Merge Operation" column
-  if [ $branch = "main" ]; then
-    echo "    <td class=\"bg\">N/A, since this is the <a href=\"https://github.com/netmod-wg/yang-xml/tree/main\">\"main\"</a> branch.</td>" >> index.html
-  else
-    echo "    <td class=\"bg\">Branch <a href=\"https://github.com/netmod-wg/yang-xml/tree/$branch\">\"$branch\"</a> merges into branch <a href=\"https://github.com/netmod-wg/yang-xml/tree/$BASE\">\"$BASE\"</a>.</td>" >> index.html
-  fi
+  # get main's draft version number
+  MVER=`ls -1 main/draft-yn-netmod-yang-xml-[0-9][0-9].xml | sed -e 's/.*-//' -e 's/\.xml$//'`
+  echo "MVER=$MVER"
 
-  # get branch's draft version number
-  VER=`ls -1 $branch/draft-yn-netmod-yang-xml-[0-9][0-9].xml | sed -e"s/.*-//"`
-  echo "VER=$VER"
+  # get branch's draft version number (yes, branch may be "main" too)
+  BVER=`ls -1 $branch/draft-yn-netmod-yang-xml-[0-9][0-9].xml | sed -e 's/.*-//' -e 's/\.xml$//'`
+  echo "BVER=$BVER"
 
   # the "Formats" column
-  echo "    <td nowrap class=\"bg\"> <table> <tr> <td nowrap><a href=\"$branch/draft-yn-netmod-yang-xml-00.html\">html</a> / <a href=\"$branch/draft-yn-netmod-yang-xml-00.txt\">text</a> / <a href=\"$branch/draft-yn-netmod-yang-xml-00.xml\">xml</a></td> </tr>  </table> </td>" >> index.html
+  echo "    <td nowrap class=\"bg\"> <table> <tr> <td nowrap><a href=\"$branch/draft-yn-netmod-yang-xml-$BVER.html\">html</a> / <a href=\"$branch/draft-yn-netmod-yang-xml-$BVER.txt\">text</a> / <a href=\"$branch/draft-yn-netmod-yang-xml-$BVER.xml\">xml</a></td> </tr>  </table> </td>" >> index.html
 
   # the "Actions" column
   if [ $branch = "main" ]; then
-    echo "    <td nowrap class=\"bg\"><a href=\"https://author-tools.ietf.org/api/iddiff?doc_1=draft-yn-netmod-yang-xml&url_2=https://netmod-wg.github.io/yang-xml/main/draft-yn-netmod-yang-xml-00.txt.paged.txt\">Diff with Datatracker</a> </td>" >> index.html
+    echo "    <td nowrap class=\"bg\"><a href=\"https://author-tools.ietf.org/api/iddiff?doc_1=draft-yn-netmod-yang-xml&url_2=https://netmod-wg.github.io/yang-xml/main/draft-yn-netmod-yang-xml-$MVER.txt.paged.txt\">Diff with Datatracker</a> </td>" >> index.html
   else
-    echo "    <td nowrap class=\"bg\"> <a href=\"https://author-tools.ietf.org/api/iddiff?url_1=https://netmod-wg.github.io/yang-xml/$BASE/draft-yn-netmod-yang-xml-00.txt&url_2=https://netmod-wg.github.io/yang-xml/$branch/draft-yn-netmod-yang-xml-00.txt\">Diff with Main</a> </td>" >> index.html
+    echo "    <td nowrap class=\"bg\"> <a href=\"https://author-tools.ietf.org/api/iddiff?url_1=https://netmod-wg.github.io/yang-xml/main/draft-yn-netmod-yang-xml-$MVER.txt&url_2=https://netmod-wg.github.io/yang-xml/$branch/draft-yn-netmod-yang-xml-$BVER.txt\">Diff with Main</a> </td>" >> index.html
   fi
   echo "  </tr>" >> index.html
 done
