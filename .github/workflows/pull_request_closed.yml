@@ -68,3 +68,23 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  increment_git_tag:
+    name: Increment Git Tag
+    runs-on: macos-latest
+    needs: update_github_pages
+    if: github.event.pull_request.merged == true
+    steps:
+
+      # checkout repo so can run `git tag`
+      - uses: actions/checkout@v4
+      - name: Push the tag
+        run: |
+          cd mysite
+          ls main/
+          ls -1 main/draft-yn-netmod-yang-xml-[0-9][0-9].xml
+          TAG=`ls -1 main/draft-yn-netmod-yang-xml-[0-9][0-9].xml | sed -e 's/\.xml$//'`
+          echo "TAG=$TAG"
+          git tag $TAG
+          git push --tags
+
