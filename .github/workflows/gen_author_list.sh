@@ -52,6 +52,9 @@ sorted_xml_authors() {
     FIRST_INITIAL=${FIRST_NAME:0:1}
     EMAIL=`grep $a $0 | awk -F'"' '{print $6}'`
 
+    # skip the bot author
+    grep -q 'users.noreply.github.com' $EMAIL && continue
+
     echo "<author initials=\"$FIRST_INITIAL\" surname=\"$LAST_NAME\" fullname=\"$FULL_NAME\">"
     echo "    <organization>$ORGANIZATION</organization>"
     echo "    <address>"
@@ -69,6 +72,7 @@ main() {
      exit 1
   fi
   echo "$SORTED_XML" > .authors.txt
+  cat .authors.txt
 }
 
 
