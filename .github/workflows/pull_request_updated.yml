@@ -28,6 +28,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+          fetch-tags: true
       - name: generate authors.txt
         run: |
           chmod +x .github/workflows/gen_author_list.sh
@@ -38,7 +40,8 @@ jobs:
           wget https://raw.githubusercontent.com/ietf-tools/rfcfold/master/rfcfold
           chmod +x rfcfold
       - name: Run "make"
-        run: make
+        run: |
+          make
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -174,9 +177,11 @@ jobs:
           }
           rm drafts.tgz
 
-      # create the "mysite/<branch>/" directory, in case it's not there already
+      # create the "mysite/<branch>/" directory (delete old if present)
       - name: Create the mysite/<branch>/ directory
-        run: mkdir -p mysite/${{github.head_ref}}
+        run: |
+          rm -rf mysite/${{github.head_ref}}
+          mkdir mysite/${{github.head_ref}}
 
       # download the just-built artifacts
       - name: Download built artifacts
@@ -190,9 +195,8 @@ jobs:
           mv draft-yn-netmod-*-[0-9][0-9].* mysite/${{github.head_ref}}/
 
       # stash some metadata
-      - name: Stash some metadata
+      - name: Stash some metadata (for gen_index_html.sh)
         run: |
-          echo "${{github.event.pull_request}}"
           echo "NUMBER: ${{github.event.pull_request.number}}" > mysite/${{github.head_ref}}/metadata.txt
           echo "TITLE: ${{github.event.pull_request.title}}" >> mysite/${{github.head_ref}}/metadata.txt
           echo "DATE: $(date +%Y-%m-%dT%H:%M:%SZ)" >> mysite/${{github.head_ref}}/metadata.txt
@@ -207,7 +211,7 @@ jobs:
       - name: Create mysite/index.html
         run: |
           chmod +x .github/workflows/gen_index_html.sh
-          .github/workflows/gen_index_html.sh "${{github.event.pull_request.number}}" "${{github.event.pull_request.title}}"  "${{github.event.pull_request.head.ref}}"
+          .github/workflows/gen_index_html.sh
 
       # recreate the drafts.tgz
       - name: Recreate drafts.tgz
