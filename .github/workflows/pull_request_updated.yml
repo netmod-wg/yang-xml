@@ -42,7 +42,6 @@ jobs:
       - name: Run "make"
         run: |
           make
-          ls -1
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -79,9 +78,6 @@ jobs:
           git checkout v2
       - name: Run idnits
         run: |
-          echo "idnits:"
-          ls -1
-          echo "/idnits"
           ./idnits/idnits --verbose draft-yn-netmod-yang-xml-[0-9][0-9].txt | tee idnits.out
       - name: Extract summary line
         run: echo "SUMMARY_LINE=$(cat idnits.out | tail -n 2 | head -n 1)" >> $GITHUB_ENV
@@ -201,7 +197,6 @@ jobs:
       # stash some metadata
       - name: Stash some metadata (for gen_index_html.sh)
         run: |
-          echo "${{github.event.pull_request}}"
           echo "NUMBER: ${{github.event.pull_request.number}}" > mysite/${{github.head_ref}}/metadata.txt
           echo "TITLE: ${{github.event.pull_request.title}}" >> mysite/${{github.head_ref}}/metadata.txt
           echo "DATE: $(date +%Y-%m-%dT%H:%M:%SZ)" >> mysite/${{github.head_ref}}/metadata.txt

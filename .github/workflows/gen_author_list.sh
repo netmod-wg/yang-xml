@@ -45,8 +45,6 @@ sorted_xml_authors() {
 
   # output authors as an XML <author> element
   for a in $AUTHORS; do
-    echo "*** AUTHOR: $a"
-
     FULL_NAME=`grep $a $0 | awk -F'"' '{print $2}'`
     ORGANIZATION=`grep $a $0 | awk -F'"' '{print $4}'`
     FIRST_NAME=`echo $FULL_NAME | awk '{print $1}'`
@@ -71,14 +69,7 @@ main() {
      exit 1
   fi
   echo "$SORTED_XML" > .authors.txt
-  echo "authors:"
-  cat .authors.txt
-  echo "/authors"
 }
 
 
 main "$@"
-
-
-#### AUTHOR INFO ####
-#kwatsen: "Kent Watsen" "Watsen Networks" "kent+ietf@watsen.net"
