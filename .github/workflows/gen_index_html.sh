@@ -52,7 +52,7 @@ for branch in $SORTED; do
   fi
 
   # get main's draft version number
-  MVER=`ls -1 main/draft-yn-netmod-yang-xml-[0-9][0-9].xml | sed -e 's/.*-//' -e 's/\.xml$//'`
+  MVER=`ls -1 main/draft-yn-netmod-yang-xml-[0-9][0-9].xml | sed -e 's/.*-//' -e 's/\.xml$//' || echo "00"`
   echo "MVER=$MVER"
 
   # get branch's draft version number (yes, branch may be "main" too)
