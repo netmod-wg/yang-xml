@@ -53,7 +53,9 @@ sorted_xml_authors() {
     EMAIL=`grep $a $0 | awk -F'"' '{print $6}'`
 
     # skip the bot author
-    grep -q 'users.noreply.github.com' $EMAIL && continue
+    echo "EMAIL=$EMAIL"
+    echo $EMAIL | grep -q 'users.noreply.github.com' && continue
+    echo "continuing..."
 
     echo "<author initials=\"$FIRST_INITIAL\" surname=\"$LAST_NAME\" fullname=\"$FULL_NAME\">"
     echo "    <organization>$ORGANIZATION</organization>"
