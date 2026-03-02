@@ -51,13 +51,11 @@ for branch in $SORTED; do
     echo "    <td class=\"bg\"><a href=\"https://github.com/netmod-wg/yang-xml/pull/$NUMBER\">#$NUMBER: $TITLE</a></td>" >> index.html
   fi
 
-  # get main's draft version number
+  # get main's draft version number (delete the trailing '|| echo "00"' once merged into main)
   MVER=`ls -1 main/draft-yn-netmod-yang-xml-[0-9][0-9].xml | sed -e 's/.*-//' -e 's/\.xml$//' || echo "00"`
-  echo "MVER=$MVER"
 
   # get branch's draft version number (yes, branch may be "main" too)
   BVER=`ls -1 $branch/draft-yn-netmod-yang-xml-[0-9][0-9].xml | sed -e 's/.*-//' -e 's/\.xml$//'`
-  echo "BVER=$BVER"
 
   # the "Formats" column
   echo "    <td nowrap class=\"bg\"> <table> <tr> <td nowrap><a href=\"$branch/draft-yn-netmod-yang-xml-$BVER.html\">html</a> / <a href=\"$branch/draft-yn-netmod-yang-xml-$BVER.txt\">text</a> / <a href=\"$branch/draft-yn-netmod-yang-xml-$BVER.xml\">xml</a></td> </tr>  </table> </td>" >> index.html

@@ -53,6 +53,7 @@ jobs:
       - name: Create mysite/index.html
         run: |
           chmod +x .github/workflows/gen_index_html.sh
+          #FIXME: delete params on next line?
           .github/workflows/gen_index_html.sh "${{github.event.pull_request.number}}" "${{github.event.pull_request.title}}"  "${{github.event.pull_request.head.ref}}"
 
       # recreate the drafts.tgz
