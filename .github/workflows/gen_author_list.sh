@@ -45,18 +45,17 @@ sorted_xml_authors() {
 
   # output authors as an XML <author> element
   for a in $AUTHORS; do
-    echo "AUTHOR: $a"
-    FULL_NAME=`grep $a $0 | awk -F'"' '{print $2}'`
+
+    # skip bot
+    echo $a | grep -q kent && continue # skip bot
+
+    # collect info from "AUTHOR INFO" at bottom
+    FULL_NAME=`grep $a $0 | awk -F'"' '{print $2}' || echo "$a NOT FOUND"`
     ORGANIZATION=`grep $a $0 | awk -F'"' '{print $4}'`
     FIRST_NAME=`echo $FULL_NAME | awk '{print $1}'`
     LAST_NAME=`echo $FULL_NAME | awk '{print $2}'`
     FIRST_INITIAL=${FIRST_NAME:0:1}
     EMAIL=`grep $a $0 | awk -F'"' '{print $6}'`
-
-    # skip the bot author
-    #echo "EMAIL=$EMAIL"
-    #echo $EMAIL | grep -q 'users.noreply.github.com' && continue
-    #echo "continuing..."
 
     echo "<author initials=\"$FIRST_INITIAL\" surname=\"$LAST_NAME\" fullname=\"$FULL_NAME\">"
     echo "    <organization>$ORGANIZATION</organization>"
