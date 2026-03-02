@@ -46,7 +46,7 @@ for branch in $SORTED; do
 
   # the "Pull Request" column
   if [ $branch = "main" ]; then
-    echo "    <td class=\"bg\">N/A, since this is the \"main\" branch (last updated by <a href=\"https://github.com/netmod-wg/yang-xml/pull/$NUMBER\">#$NUMBER: $TITLE</a>).</td>" >> index.html
+    echo "    <td class=\"bg\">N/A, since this is the \"main\" branch</td>" >> index.html
   else
     echo "    <td class=\"bg\"><a href=\"https://github.com/netmod-wg/yang-xml/pull/$NUMBER\">#$NUMBER: $TITLE</a></td>" >> index.html
   fi

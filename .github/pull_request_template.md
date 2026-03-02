@@ -15,7 +15,7 @@
 > a link to it. Either:
 >
 > None
-> https://github.com/netmod-wg/yang-xml/designs/\<filename\>
+> https://github.com/netmod-wg/yang-xml/designs/<filename>
 
 
 ## Additional Information
