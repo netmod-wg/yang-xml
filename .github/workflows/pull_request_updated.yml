@@ -18,6 +18,11 @@ jobs:
               - [ ] Updated "Security Considerations" section, or N/A?
               - [ ] Updated "Normative/Informational References" sections, or N/A?
               - [ ] Updated "Acknowledgements" section, or N/A? (Not GitHub users)
+
+            # The following MUST be verified by the EDITOR before merging to `main`:
+              - [ ] Authors have verified all of the above?
+              - [ ] The XML artifact uploads to Datatracker?
+
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh pr comment https://github.com/netmod-wg/yang-xml/pull/${{github.event.number}} --body "$COMMENT"
 
@@ -137,7 +142,7 @@ jobs:
         with:
           issue-number: ${{github.event.number}}
           comment-author: 'github-actions[bot]'
-          body-includes: 'All of the following must be verified before merging to `main`.'
+          body-includes: 'All of the following must be verified by AUTHORS before merging to `main`.'
       - run: |
           echo "BODY: ${{steps.fc.outputs.comment-body}}"
           if ${{ contains(steps.fc.outputs.comment-body, '[ ] Updated') }} ; then
