@@ -48,6 +48,7 @@ sorted_xml_authors() {
 
     # skip bot
     echo $a | grep -q kent && continue # skip bot
+    echo "AUTHOR: $a"
 
     # collect info from "AUTHOR INFO" at bottom
     FULL_NAME=`grep $a $0 | awk -F'"' '{print $2}' || echo "$a NOT FOUND"`
