@@ -19,7 +19,7 @@
   xmlns:xi="http://www.w3.org/2001/XInclude" docName="draft-yn-netmod-yang-xml-latest">
     <front>
         <title abbrev="XML Encoding of YANG Data">XML Encoding of Data Modeled with YANG</title>
-        <author initials="K" surname="Watsen" fullname='Kent Watsen' role="editor">
+        <author initials="K" surname="Watsen" fullname='Kent Watsen'>
             <organization>Watsen Networks</organization>
             <address>
                 <email>kent+ietf@watsen.net</email>
