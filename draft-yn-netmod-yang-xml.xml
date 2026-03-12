@@ -70,7 +70,6 @@
             <ul spacing="compact">
                 <li>action</li>
                 <li>anydata</li>
-                <li>anyxml</li>
                 <li>augment</li>
                 <li>container</li>
                 <li>data node</li>
@@ -101,7 +100,7 @@
             and notifications contain a single top-level element.</t>
 
             <t>Instances of YANG data nodes (leafs, containers, leaf-lists, lists,
-            anydata nodes, and anyxml nodes) are encoded as XML elements having
+            and anydata nodes) are encoded as XML elements having
             the name of the YANG data node.  <xref target="names"/>) defines
             how the name is qualified with a namespace, and the following sections
             deal with the value part.  The encoding rules are identical for all
@@ -111,7 +110,7 @@
             <t>With the exception of "anydata" encoding (<xref target="anydata"/>), all rules in
             this document are also applicable to YANG&nbsp;1.0 <xref target="RFC6020"/>.</t>
 
-            <t>With the exception of anyxml and schema-less anydata nodes, it is
+            <t>With the exception of schema-less anydata nodes, it is
             possible to map an XML-encoded data tree to other encodings, such as
             the JSON encoding as defined in <xref target="RFC7951"/>, and vice
             versa.  However, such conversions require the YANG data model to be
@@ -465,28 +464,6 @@ anydata data;
 ]]>
                     </artwork>
                 </figure>
-            </section>
-
-            <section title='The "anyxml" Data Node'>
-                <!-- this part from RFC 7950 Section 7.11 (XML Encoding Rules, for anyxml) -->
-<!--
-    <t>
-An anyxml node is encoded as an XML element.  The element&apos;s local name
-is the anyxml&apos;s identifier, and its namespace is the module&apos;s XML
-namespace (see <xref target="namespace"/>).  The value of the anyxml node is encoded
-as XML content of this element.
-    </t>
-    <t>
-Note that any XML prefixes used in the encoding are local to each
-instance encoding.  This means that the same XML may be encoded
-differently by different implementations.
-    </t>
--->
-
-                <!-- copy/paste/edit from RFC 7951 Section 5.6 (The "anyxml" Data Node) -->
-                <t>An anyxml node is encoded the same as an anydata node.  Please see
-                <xref target="anydata"/> for how the anydata node is encoded.</t>
-
             </section>
 
             <section title="Metadata Objects">
