@@ -16,7 +16,7 @@
 <?rfc strict="yes"?>
 
 <rfc ipr="trust200902" category="std" submissionType="IETF" consensus="true"
-  xmlns:xi="http://www.w3.org/2001/XInclude" docName="draft-yn-netmod-yang-xml-latest">
+  xmlns:xi="http://www.w3.org/2001/XInclude" docName="draft-ietf-netmod-yang-xml-latest">
     <front>
         <title abbrev="XML Encoding of YANG Data">XML Encoding of Data Modeled with YANG</title>
         <author initials="K" surname="Watsen" fullname='Kent Watsen'>
@@ -56,6 +56,10 @@
             data, state data, parameters of Remote Procedure Call (RPC)
             operations or actions, and notifications defined using
             the Extensible Markup Language (XML) <xref target="XML"/>.</t>
+            <t>The XML encoding for YANG modeled data was originally
+            defined in <xref target="RFC7950"/>.  The IETF consensus is
+            to move the normative definition out of RFC 7950, which this
+            document achieves.</t>
         </section>
 
         <section title="Terminology and Notation">
