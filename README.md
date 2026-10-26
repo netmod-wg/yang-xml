@@ -1,6 +1,6 @@
 # YANG XML
 
-This is the repository for the document `draft-yn-netmod-yang-xml`
+This is the repository for the document `draft-ietf-netmod-yang-xml`
 (XML Encoding of YANG Data).
 
 The document  mimics RFC 7951 (JSON Encoding of YANG Data), whilst
