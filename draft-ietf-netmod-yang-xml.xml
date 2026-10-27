@@ -63,7 +63,9 @@
         </section>
 
         <section title="Changes from RFC 7950">
-          <t>Suport for the "anyxml" statement was removed.</t>
+          <ul>
+            <li>Removed suport for the "anyxml" statement.</li>
+          </ul>
         </section>
 
         <section title="Terminology and Notation">
