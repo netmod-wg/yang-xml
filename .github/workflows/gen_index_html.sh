@@ -52,19 +52,19 @@ for branch in $SORTED; do
   fi
 
   # get main's draft version number (delete the trailing '|| echo "00"' once merged into main)
-  MVER=`ls -1 main/draft-yn-netmod-yang-xml-[0-9][0-9].xml | sed -e 's/.*-//' -e 's/\.xml$//' || echo "00"`
+  MVER=`ls -1 main/draft-ietf-netmod-yang-xml-[0-9][0-9].xml | sed -e 's/.*-//' -e 's/\.xml$//' || echo "00"`
 
   # get branch's draft version number (yes, branch may be "main" too)
-  BVER=`ls -1 $branch/draft-yn-netmod-yang-xml-[0-9][0-9].xml | sed -e 's/.*-//' -e 's/\.xml$//'`
+  BVER=`ls -1 $branch/draft-ietf-netmod-yang-xml-[0-9][0-9].xml | sed -e 's/.*-//' -e 's/\.xml$//'`
 
   # the "Formats" column
-  echo "    <td nowrap class=\"bg\"> <table> <tr> <td nowrap><a href=\"$branch/draft-yn-netmod-yang-xml-$BVER.html\">html</a> / <a href=\"$branch/draft-yn-netmod-yang-xml-$BVER.txt\">text</a> / <a href=\"$branch/draft-yn-netmod-yang-xml-$BVER.xml\">xml</a></td> </tr>  </table> </td>" >> index.html
+  echo "    <td nowrap class=\"bg\"> <table> <tr> <td nowrap><a href=\"$branch/draft-ietf-netmod-yang-xml-$BVER.html\">html</a> / <a href=\"$branch/draft-ietf-netmod-yang-xml-$BVER.txt\">text</a> / <a href=\"$branch/draft-ietf-netmod-yang-xml-$BVER.xml\">xml</a></td> </tr>  </table> </td>" >> index.html
 
   # the "Actions" column
   if [ $branch = "main" ]; then
-    echo "    <td nowrap class=\"bg\"><a href=\"https://author-tools.ietf.org/api/iddiff?doc_1=draft-yn-netmod-yang-xml&url_2=https://netmod-wg.github.io/yang-xml/main/draft-yn-netmod-yang-xml-$MVER.txt.paged.txt\">Diff with Datatracker</a> </td>" >> index.html
+    echo "    <td nowrap class=\"bg\"><a href=\"https://author-tools.ietf.org/api/iddiff?doc_1=draft-ietf-netmod-yang-xml&url_2=https://netmod-wg.github.io/yang-xml/main/draft-ietf-netmod-yang-xml-$MVER.txt.paged.txt\">Diff with Datatracker</a> </td>" >> index.html
   else
-    echo "    <td nowrap class=\"bg\"> <a href=\"https://author-tools.ietf.org/api/iddiff?url_1=https://netmod-wg.github.io/yang-xml/main/draft-yn-netmod-yang-xml-$MVER.txt&url_2=https://netmod-wg.github.io/yang-xml/$branch/draft-yn-netmod-yang-xml-$BVER.txt\">Diff with Main</a> </td>" >> index.html
+    echo "    <td nowrap class=\"bg\"> <a href=\"https://author-tools.ietf.org/api/iddiff?url_1=https://netmod-wg.github.io/yang-xml/main/draft-ietf-netmod-yang-xml-$MVER.txt&url_2=https://netmod-wg.github.io/yang-xml/$branch/draft-ietf-netmod-yang-xml-$BVER.txt\">Diff with Main</a> </td>" >> index.html
   fi
   echo "  </tr>" >> index.html
 done

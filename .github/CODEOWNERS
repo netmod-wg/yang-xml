@@ -2,5 +2,5 @@
 @netmod-wg/yang-xml-admin
 
 # owners can approve reviews on all draft-source files.
-draft-yn-netmod-yang-xml-00.xml @netmod-wg/yang-xml-owners
+draft-ietf-netmod-yang-xml-00.xml @netmod-wg/yang-xml-owners
 designs/ @netmod-wg/yang-xml-owners
