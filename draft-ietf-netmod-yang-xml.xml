@@ -62,6 +62,10 @@
             document achieves.</t>
         </section>
 
+        <section title="Changes from RFC 7950">
+          <t>Suport for the "anyxml" statement was removed.</t>
+        </section>
+
         <section title="Terminology and Notation">
             <!-- copy/paste/edit from RFC 7951 -->
 
