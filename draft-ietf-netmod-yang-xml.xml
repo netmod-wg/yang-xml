@@ -52,7 +52,7 @@
     <middle>
         <section title="Introduction">
             <t>This document defines encoding rules for representing YANG
-            <xref target="I-D.yn-netmod-yang2"/> modeled configuration
+            <xref target="I-D.ietf-netmod-yang2"/> modeled configuration
             data, state data, parameters of Remote Procedure Call (RPC)
             operations or actions, and notifications defined using
             the Extensible Markup Language (XML) <xref target="XML"/>.</t>
@@ -70,7 +70,7 @@
             and "OPTIONAL" in this document are to be interpreted as described
             in BCP&nbsp;14 <xref target="RFC2119"/> <xref target="RFC8174"/>
             when, and only when, they appear in all capitals, as shown here.</t>
-            <t>The following terms are defined in <xref target="I-D.yn-netmod-yang2"/>:</t>
+            <t>The following terms are defined in <xref target="I-D.ietf-netmod-yang2"/>:</t>
             <ul spacing="compact">
                 <li>action</li>
                 <li>anydata</li>
@@ -495,8 +495,8 @@ anydata data;
                 <t>All numeric types (int8, int16, int32, uint8, uint16, uint32,
                 int64, uint64, and decimal64) are represented as a text value
                 conforming the to lexical representation for the type described
-                in <xref section="9.2.1" target="I-D.yn-netmod-yang2"/> and
-                <xref section="9.3.1" target="I-D.yn-netmod-yang2"/> .</t>
+                in <xref section="9.2.1" target="I-D.ietf-netmod-yang2"/> and
+                <xref section="9.3.1" target="I-D.ietf-netmod-yang2"/> .</t>
 
                 <!-- this part is new -->
                 <t>Example: For the "int16" type</t>
@@ -529,7 +529,7 @@ leaf-list foo {
                 <!-- this part is new, not from RFC 7951 Section 6.2 -->
                 <t>A "string" value is represented as character data conforming
                 the to lexical representation for the type described in
-                <xref section="9.4.1" target="I-D.yn-netmod-yang2"/>.</t>
+                <xref section="9.4.1" target="I-D.ietf-netmod-yang2"/>.</t>
 
                 <t>Example: For the "string" type</t>
                 <figure>
@@ -589,7 +589,7 @@ leaf-list foo {
                 <!-- this part is new -->
                 <t>An "enumeration" value is represented as character data conforming
                 the to lexical representation for the type described in
-                <xref section="9.6.1" target="I-D.yn-netmod-yang2"/>.</t>
+                <xref section="9.6.1" target="I-D.ietf-netmod-yang2"/>.</t>
                 <t>Example: For the "enumeration" type</t>
                 <figure>
                     <artwork>
@@ -620,7 +620,7 @@ leaf-list foo {
                 <!-- this part is new -->
                 <t>A "bits" value is represented as character data conforming
                 the to lexical representation for the type described in
-                <xref section="9.7.2" target="I-D.yn-netmod-yang2"/>.</t>
+                <xref section="9.7.2" target="I-D.ietf-netmod-yang2"/>.</t>
 
                 <t>Example: For the "bits" type</t>
                 <figure>
@@ -652,7 +652,7 @@ leaf-list foo {
                 <!-- this part is new -->
                 <t>A "binary" value is represented as character data conforming
                 the to lexical representation for the type described in
-                <xref section="9.8.2" target="I-D.yn-netmod-yang2"/>.</t>
+                <xref section="9.8.2" target="I-D.ietf-netmod-yang2"/>.</t>
                 <t>Example: For the "binary" type</t>
                 <figure>
                     <artwork>
@@ -678,7 +678,7 @@ leaf-list foo {
                 <!-- this part is new -->
                 <t>A "leafref" value is represented as character data conforming
                 the to lexical representation for the type described in
-                <xref section="9.9.4" target="I-D.yn-netmod-yang2"/>.</t>
+                <xref section="9.9.4" target="I-D.ietf-netmod-yang2"/>.</t>
                 <t>Example: For the "leafref" type</t>
                 <figure>
                     <artwork>
@@ -825,7 +825,7 @@ leaf foo {
             <section title='The "union" Type'>
                 <t>A "union" value is represented as character data conforming
                 the to lexical representation for the type described in
-                <xref section="9.12.2" target="I-D.yn-netmod-yang2"/>.</t>
+                <xref section="9.12.2" target="I-D.ietf-netmod-yang2"/>.</t>
                 <t>Example: For the "union" type</t>
                 <figure>
                     <artwork>
@@ -908,7 +908,7 @@ leaf-list foo {
         <references title="Normative References">
             <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
             <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
-            <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.yn-netmod-yang2.xml"/>
+            <xi:include href="https://datatracker.ietf.org/doc/bibxml3/reference.I-D.ietf-netmod-yang2.xml"/>
 
             <reference anchor="XML" target="https://www.w3.org/TR/2008/REC-xml-20081126/">
                 <front>
